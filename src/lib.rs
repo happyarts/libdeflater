@@ -285,6 +285,9 @@ impl Drop for Decompressor {
 const MIN_COMPRESSION_LVL: i32 = 0;
 const DEFAULT_COMPRESSION_LVL : i32 = 6;
 const MAX_COMPRESSION_LVL: i32 = 12;
+/// Levels 13 and 14 come from this fork's libdeflate; `best()` and
+/// `iter()` stay at the standard levels.
+const MAX_EXTRA_COMPRESSION_LVL: i32 = 14;
 
 /// Compression level used by a [`Compressor`](struct.Compressor.html)
 /// instance.
@@ -312,9 +315,9 @@ impl CompressionLvl {
     /// `Result::Error(error)`.
     ///
     /// Valid compression levels for libdeflate, at time of writing,
-    /// are 1-12.
+    /// are 0-12, with this fork's libdeflate also 13 and 14.
     pub const fn new(level: i32) -> CompressionLevelResult {
-        if MIN_COMPRESSION_LVL <= level && level <= MAX_COMPRESSION_LVL {
+        if MIN_COMPRESSION_LVL <= level && level <= MAX_EXTRA_COMPRESSION_LVL {
             Ok(CompressionLvl(level))
         } else {
             Err(CompressionLvlError::InvalidValue)
