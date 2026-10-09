@@ -1,3 +1,5 @@
+// Modified in happyarts/libdeflater: tests for compression levels 13 and 14.
+
 extern crate libdeflater;
 
 use std::fs::File;

@@ -1,3 +1,6 @@
+// Modified in happyarts/libdeflater: compression levels 13 and 14 (see
+// MAX_EXTRA_COMPRESSION_LVL).
+
 //! Rust bindings to [`libdeflate`], a DEFLATE-based buffer
 //! compression/decompression library that works with raw DEFLATE,
 //! zlib, and gzip data.

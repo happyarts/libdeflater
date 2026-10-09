@@ -1,8 +1,14 @@
+// Modified in happyarts/libdeflater: rebuilds when libdeflate's sources change.
+
 use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 
 fn main() {
+    // Also when files inside the libdeflate submodule change, which cargo
+    // does not see on its own
+    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=libdeflate");
     let dst = PathBuf::from(env::var_os("OUT_DIR").unwrap());
 
     #[cfg(feature = "dynamic")]
