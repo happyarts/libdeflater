@@ -384,12 +384,31 @@ fn test_compression_lvl_new_returns_ok_for_7() {
 }
 
 #[test]
-fn test_compression_lvl_new_returns_err_for_13() {
-    // If libdeflate changes in the future this test will need to be
-    // scrapped, but it's ok as a smoke test
-    let ret = CompressionLvl::new(13).unwrap_err();
+fn test_compression_lvl_new_returns_err_for_15() {
+    // Levels 13 and 14 come from this fork's libdeflate; 15 is the first
+    // invalid one
+    let ret = CompressionLvl::new(15).unwrap_err();
 
     assert_eq!(ret, CompressionLvlError::InvalidValue);
+}
+
+#[test]
+fn test_levels_13_and_14_round_trip() {
+    let mut content = Vec::new();
+    content.resize(fixture_content_size(), 0);
+    Decompressor::new()
+        .gzip_decompress(&read_fixture_gz(), &mut content)
+        .unwrap();
+    for level in [13, 14] {
+        let mut compressor = Compressor::new(CompressionLvl::new(level).unwrap());
+        let mut compressed = vec![0; compressor.deflate_compress_bound(content.len())];
+        let size = compressor.deflate_compress(&content, &mut compressed).unwrap();
+        let mut decompressed = vec![0; content.len()];
+        Decompressor::new()
+            .deflate_decompress(&compressed[..size], &mut decompressed)
+            .unwrap();
+        assert_eq!(decompressed, content);
+    }
 }
 
 #[test]
